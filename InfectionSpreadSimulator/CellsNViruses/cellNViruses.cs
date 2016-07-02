@@ -19,7 +19,5 @@ namespace CellsNViruses
         get {return isInfected;}
         set {isInfected = value;}
         }
-
-
     }
 }
