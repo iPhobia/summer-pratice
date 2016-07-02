@@ -1,0 +1,6 @@
+C:\Users\Phobia\Desktop\super solutions 2016\helllooo\helllooo\bin\Debug\helllooo.exe.config
+C:\Users\Phobia\Desktop\super solutions 2016\helllooo\helllooo\bin\Debug\helllooo.exe
+C:\Users\Phobia\Desktop\super solutions 2016\helllooo\helllooo\bin\Debug\helllooo.pdb
+C:\Users\Phobia\Desktop\super solutions 2016\helllooo\helllooo\obj\Debug\helllooo.csprojResolveAssemblyReference.cache
+C:\Users\Phobia\Desktop\super solutions 2016\helllooo\helllooo\obj\Debug\helllooo.exe
+C:\Users\Phobia\Desktop\super solutions 2016\helllooo\helllooo\obj\Debug\helllooo.pdb
