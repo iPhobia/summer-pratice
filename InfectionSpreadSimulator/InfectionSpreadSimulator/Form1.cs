@@ -14,7 +14,7 @@ namespace InfectionSpreadSimulator
 {
     public partial class Form1 : Form
     {
-        static string path = Path.GetDirectoryName(Application.ExecutablePath);
+        static string path = @"C:\Users\NightKin\Source\Repos\summer-pratice\InfectionSpreadSimulator";
         string odessaCordDB = path + @"\txt\OdessaCord.txt";
         string stringDatabase;
         public Form1()
