@@ -60,10 +60,10 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(632, 479);
+            this.ClientSize = new System.Drawing.Size(719, 479);
             this.Controls.Add(this.gmap);
             this.Name = "Form1";
-            this.Text = "Form1";
+            this.Text = "Infection Spreading Simulator";
             this.Load += new System.EventHandler(this.Form1_Load);
             this.ResumeLayout(false);
 
