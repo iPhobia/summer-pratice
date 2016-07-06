@@ -19,6 +19,8 @@ namespace InfectionSpreadSimulator
         static string path = @"F:\Visual Studio 2013 Projects\Course 2 Practics (InfectionSpreadSimulator)";
         string odessaCordDB = path + @"\txt\OdessaCord.txt";
         string stringDatabase;
+
+        GMapOverlay polyOverlay = new GMapOverlay("polygons");
         public Form1()
         {
             InitializeComponent();
@@ -26,48 +28,117 @@ namespace InfectionSpreadSimulator
 
         private void Form1_Load(object sender, EventArgs e)
         {
+            if (FirstStartOnThisComputer() == true)
+            {
+                //no program's entry has been detected in registry, so create a new one
+                Microsoft.Win32.Registry.CurrentUser.CreateSubKey(Statics.ProgramsRegistryKeyName);
+                polygonOdessaFormer();
+            }
             gmap.MapProvider = GMap.NET.MapProviders.GMapProviders.GoogleTerrainMap;
             GMap.NET.GMaps.Instance.Mode = GMap.NET.AccessMode.ServerOnly;
             gmap.SetPositionByKeywords("Odessa, Ukraine");
             gmap.DragButton = MouseButtons.Left; //перетаскивание карты ЛКМ
 
-
-            GMapOverlay polyOverlay = new GMapOverlay("polygons");
-            IList<GMap.NET.PointLatLng> points = new List<GMap.NET.PointLatLng>();
-            /*using (StreamReader sr = new StreamReader(odessaCordDB, System.Text.Encoding.Default))
+            if (!FirstStartOnThisComputer())
             {
-                int j = 0;
-                while ((stringDatabase = sr.ReadLine()) != null)
+                //if coordinates stored in registry are corrupted, then reupload them into registry again
+                if (!OdessaSchemeCheck())
                 {
-                    string[] tempStrings = new string[2];
-                    tempStrings = stringDatabase.Split(',');
-                    points.Add(new GMap.NET.PointLatLng(Convert.ToDouble(tempStrings[0]), Convert.ToDouble(tempStrings[1])));
-                    j++;
+                    polygonOdessaFormer();
+                    MessageBox.Show("Program has detected, that polygons' coordinates were modified. Reset to default state succesfully completed.");
                 }
-            }*/
-            points.Add(new GMap.NET.PointLatLng(46.488322, 30.733475));
-            points.Add(new GMap.NET.PointLatLng(46.483417, 30.748951));
-            points.Add(new GMap.NET.PointLatLng(46.472660, 30.746891));
-            points.Add(new GMap.NET.PointLatLng(46.473251, 30.731099));
-            var serializer = new JavaScriptSerializer();
-            string textValue = serializer.Serialize(points);
-            var key = InitializeRegistryKey("pointsList");
-            key.SetValue(key.Name, textValue);
-            string value = key.GetValue(key.Name).ToString();
-            List<GMap.NET.PointLatLng> list = serializer.Deserialize<List<GMap.NET.PointLatLng>>(value);
-            MessageBox.Show(list[0].Lat.ToString() + ", " + list[0].Lng.ToString());
-            //GMapPolygon polygon = new GMapPolygon(new List<GMap.NET.PointLatLng>(points), "mypolygon");
-            //polygon.Fill = new SolidBrush(Color.FromArgb(50, Color.Red));
-            //polygon.Stroke = new Pen(Color.Red, 1);
-            //polyOverlay.Polygons.Add(polygon);
-            //gmap.Overlays.Add(polyOverlay);
+            }
+
+            //draw polygons
+            inputDataInPolygonDrawer();
+
         }
 
-        private RegistryKey InitializeRegistryKey(string key)
+     
+        private bool FirstStartOnThisComputer()
         {
-            Microsoft.Win32.RegistryKey _key;
-            _key = Microsoft.Win32.Registry.CurrentUser.CreateSubKey(key);
-            return _key;
+            if (Microsoft.Win32.Registry.CurrentUser.OpenSubKey(Statics.ProgramsRegistryKeyName) == null)
+            {
+                return true;
+            }
+            else
+            {
+                return false;
+            }
+        }
+        private void polygonOdessaFormer()
+        {
+            IList<GMap.NET.PointLatLng> points = new List<GMap.NET.PointLatLng>();
+            var serializer = new JavaScriptSerializer();
+            string textValue;
+
+            //kievskiyDistrict
+            points.Add(new GMap.NET.PointLatLng(46.320427, 30.677651));
+            points.Add(new GMap.NET.PointLatLng(46.351084, 30.665794));
+            points.Add(new GMap.NET.PointLatLng(46.393555, 30.689039));
+            points.Add(new GMap.NET.PointLatLng(46.429958, 30.695675));
+            points.Add(new GMap.NET.PointLatLng(46.436918, 30.744867));
+            points.Add(new GMap.NET.PointLatLng(46.412058, 30.760014));
+            points.Add(new GMap.NET.PointLatLng(46.376738, 30.748329));
+            textValue = serializer.Serialize(points);
+            //create s string parameter in Win registy for Kievskiy District
+            Microsoft.Win32.Registry.CurrentUser.OpenSubKey(Statics.ProgramsRegistryKeyName, true).SetValue(Statics.KievskiyDistrict, textValue, RegistryValueKind.String);
+            points.Clear();
+
+            //primorskiyDistrict
+            points.Add(new GMap.NET.PointLatLng(46.477375, 30.697186));
+            points.Add(new GMap.NET.PointLatLng(46.473977, 30.722220));
+            points.Add(new GMap.NET.PointLatLng(46.412058, 30.760014));
+            points.Add(new GMap.NET.PointLatLng(46.448168, 30.773919));
+            points.Add(new GMap.NET.PointLatLng(46.478912, 30.767224));
+            points.Add(new GMap.NET.PointLatLng(46.505384, 30.729287));
+            textValue = serializer.Serialize(points);
+            //create s string parameter in Win registy for Primorskiy District
+            Microsoft.Win32.Registry.CurrentUser.OpenSubKey(Statics.ProgramsRegistryKeyName, true).SetValue(Statics.PrimorskiyDistrict, textValue, RegistryValueKind.String);
+            points.Clear();
+        }
+
+        private bool OdessaSchemeCheck()
+        {
+            if (Microsoft.Win32.Registry.CurrentUser.OpenSubKey(Statics.ProgramsRegistryKeyName).GetValue(Statics.KievskiyDistrict) == null)
+            {
+                return false;
+            }
+            else if (Microsoft.Win32.Registry.CurrentUser.OpenSubKey(Statics.ProgramsRegistryKeyName).GetValue(Statics.PrimorskiyDistrict) == null)
+            {
+                return false;
+            }
+            else
+            {
+                return true;
+            }
+        }
+
+        private void drawPolygons(string registryValue, string regionName)
+        {
+            //universal method for drawing polygons. Grabs the values from registry, deserialize them and draw on map
+            var serializer = new JavaScriptSerializer();
+            List<GMap.NET.PointLatLng> list = serializer.Deserialize<List<GMap.NET.PointLatLng>>(registryValue);
+            GMapPolygon polygon = new GMapPolygon(list, regionName);
+            polygon.Fill = new SolidBrush(Color.FromArgb(50, Color.LightGreen));
+            polygon.Stroke = new Pen(Color.Green, 1);
+            polyOverlay.Polygons.Add(polygon);
+            gmap.Overlays.Add(polyOverlay);
+        }
+
+        private void inputDataInPolygonDrawer()
+        {
+            string value; 
+            value = Statics.ProgramKey.OpenSubKey(Statics.ProgramsRegistryKeyName).GetValue(Statics.KievskiyDistrict).ToString();
+            drawPolygons(value, Statics.KievskiyDistrict);
+            value = Statics.ProgramKey.OpenSubKey(Statics.ProgramsRegistryKeyName).GetValue(Statics.PrimorskiyDistrict).ToString();
+            drawPolygons(value, Statics.PrimorskiyDistrict);
+        }
+
+        private void button1_Click(object sender, EventArgs e)
+        {
+            polygonOdessaFormer();
+            Application.Restart();
         }
     }
 }
