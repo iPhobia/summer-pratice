@@ -16,8 +16,9 @@ namespace CellsNViruses
         }
         public bool IsInfected
         {
-        get {return isInfected;}
-        set {isInfected = value;}
+            get { return isInfected; }
+            set { isInfected = value; }
         }
     }
+
 }
