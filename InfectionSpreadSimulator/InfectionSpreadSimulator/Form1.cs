@@ -11,16 +11,21 @@ using GMap.NET.WindowsForms;
 using System.IO;
 using Microsoft.Win32;
 using System.Web.Script.Serialization;
+using CellsNVirus;
 
 namespace InfectionSpreadSimulator
 {
     public partial class Form1 : Form
     {
-        static string path = @"F:\Visual Studio 2013 Projects\Course 2 Practics (InfectionSpreadSimulator)";
-        string odessaCordDB = path + @"\txt\OdessaCord.txt";
-        string stringDatabase;
-
         GMapOverlay polyOverlay = new GMapOverlay("polygons");
+        GMapPolygon polygon;
+        List<Cell> districts = new List<Cell>();
+        List<Edge> edgeBtwDistricts = new List<Edge>();
+        Random rnd = new Random();
+        int districtrand;
+        Virus virusInfection = new Virus();
+
+        //List<GMap.NET.PointLatLng> polygons = new List<GMap.NET.PointLatLng>;
         public Form1()
         {
             InitializeComponent();
@@ -31,7 +36,7 @@ namespace InfectionSpreadSimulator
             if (FirstStartOnThisComputer() == true)
             {
                 //no program's entry has been detected in registry, so create a new one
-                Microsoft.Win32.Registry.CurrentUser.CreateSubKey(Statics.ProgramsRegistryKeyName);
+                Registry.CurrentUser.CreateSubKey(Statics.ProgramsRegistryKeyName);
                 polygonOdessaFormer();
             }
             gmap.MapProvider = GMap.NET.MapProviders.GMapProviders.GoogleTerrainMap;
@@ -49,12 +54,119 @@ namespace InfectionSpreadSimulator
                 }
             }
 
+            districts.Add(new Cell("kievskiy",6));
+            districts.Add(new Cell("primorskiy",7));
+            districts.Add(new Cell("malinovskiy",8));
+            districts.Add(new Cell("suvorovskiy",9));
+            districts.Add(new Cell("kotovskiyPosyolok",10));
+ 
+
+            edgeBtwDistricts.Add(new Edge ("kievNPrimEdge", 70));
+            edgeBtwDistricts.Add(new Edge("kievNMalinEdge", 60));
+            edgeBtwDistricts.Add(new Edge("malinNPrimEdge", 50));
+            edgeBtwDistricts.Add(new Edge("malinNSuvorEdge", 40));
+            edgeBtwDistricts.Add(new Edge("suvorNPrimEdge", 30));
+            edgeBtwDistricts.Add(new Edge("suvorNPosKotEdge", 20));
+
             //draw polygons
             inputDataInPolygonDrawer();
-
         }
 
-     
+        private void virus_Tick(object sender, EventArgs e)
+        {
+            int kievNPrimInfectChance = rnd.Next(0, 150);
+            int kievNMalinInfectChance = rnd.Next(0, 150);
+            int malinNPrimInfectChance = rnd.Next(0, 150);
+            int malinNSuvorInfectChance = rnd.Next(0, 150);
+            int suvorNPrimInfectChance = rnd.Next(0, 150);
+            int suvorNPosKotInfectChance = rnd.Next(0, 150);
+
+            //in case of kievskiy district infected
+            if (districts[0].IsInfected)
+            {
+                //primorskiy district infect
+                if (kievNPrimInfectChance < edgeBtwDistricts[0].InfectedChance)
+                {
+                    districts[1].IsInfected = true;
+                }
+                //malinovskiy district infect
+                if (kievNMalinInfectChance < edgeBtwDistricts[1].InfectedChance)
+                {
+                    districts[2].IsInfected = true;
+                }
+            }
+
+            //in case of primorskiy district infected
+            if (districts[1].IsInfected)
+            {
+                //kievskiy district infect
+                if (kievNPrimInfectChance < edgeBtwDistricts[0].InfectedChance)
+                {
+                    districts[0].IsInfected = true;
+                }
+                //malinovskiy district infect
+                if (malinNPrimInfectChance < edgeBtwDistricts[2].InfectedChance)
+                {
+                    districts[2].IsInfected = true;
+                }
+                //suvorovskiy district infect
+                if (suvorNPrimInfectChance < edgeBtwDistricts[4].InfectedChance)
+                {
+                    districts[3].IsInfected = true;
+                }
+            }
+
+            //in case of malinovskiy district infected
+            if (districts[2].IsInfected)
+            {
+                //kievskiy district infect
+                if (kievNMalinInfectChance < edgeBtwDistricts[0].InfectedChance)
+                {
+                    districts[0].IsInfected = true;
+                }
+                //primorskiy district infect
+                if (malinNPrimInfectChance < edgeBtwDistricts[2].InfectedChance)
+                {
+                    districts[1].IsInfected = true;
+                }
+                //suvorovskiy district infect
+                if (malinNSuvorInfectChance < edgeBtwDistricts[3].InfectedChance)
+                {
+                    districts[3].IsInfected = true;
+                }
+            }
+
+            //in case of suvorovskiy district infected
+            if (districts[3].IsInfected)
+            {
+                //malinovskiy district infect
+                if (malinNSuvorInfectChance < edgeBtwDistricts[3].InfectedChance)
+                {
+                    districts[2].IsInfected = true;
+                }
+                //primorskiy district infect
+                if (suvorNPrimInfectChance < edgeBtwDistricts[4].InfectedChance)
+                {
+                    districts[1].IsInfected = true;
+                }
+                //posyolok Kotovskiy district infect
+                if (suvorNPosKotInfectChance < edgeBtwDistricts[5].InfectedChance)
+                {
+                    districts[4].IsInfected = true;
+                }
+            }
+
+            //in case of posyolok Kotovskiy district infected
+            if (districts[4].IsInfected)
+            {
+                //primorskiy district infect
+                if (suvorNPosKotInfectChance < edgeBtwDistricts[5].InfectedChance)
+                {
+                    districts[3].IsInfected = true;
+                }
+            }
+        }
+
         private bool FirstStartOnThisComputer()
         {
             if (Registry.CurrentUser.OpenSubKey(Statics.ProgramsRegistryKeyName) == null)
@@ -163,13 +275,29 @@ namespace InfectionSpreadSimulator
             }
         }
 
-        private void drawPolygons(string registryValue, string regionName)
+        private void drawPolygons(string registryValue, string regionName, Cell cell)
         {
             //universal method for drawing polygons. Grabs the values from registry, deserialize them and draw on map
             var serializer = new JavaScriptSerializer();
             List<GMap.NET.PointLatLng> list = serializer.Deserialize<List<GMap.NET.PointLatLng>>(registryValue);
-            GMapPolygon polygon = new GMapPolygon(list, regionName);
-            polygon.Fill = new SolidBrush(Color.FromArgb(50, Color.LightGreen));
+            polygon = new GMapPolygon(list, regionName);
+            if (cell.Health == cell.MaxHealth)
+                polygon.Fill = new SolidBrush(Color.FromArgb(50, Color.Green));
+            else
+            if (cell.Health < cell.MaxHealth && cell.Health > cell.MaxHealth - cell.MaxHealth * 0.2)
+                polygon.Fill = new SolidBrush(Color.FromArgb(50, Color.LightGreen));
+            else
+            if (cell.Health <= cell.MaxHealth - cell.MaxHealth * 0.2 && cell.Health > cell.MaxHealth - cell.MaxHealth * 0.4)
+                polygon.Fill = new SolidBrush(Color.FromArgb(50, Color.Yellow));
+            else
+            if (cell.Health <= cell.MaxHealth - cell.MaxHealth * 0.4 && cell.Health > cell.MaxHealth - cell.MaxHealth * 0.6)
+                polygon.Fill = new SolidBrush(Color.FromArgb(50, Color.Orange));
+            else
+            if (cell.Health <= cell.MaxHealth - cell.MaxHealth * 0.6 && cell.Health > cell.MaxHealth - cell.MaxHealth * 0.8)
+                polygon.Fill = new SolidBrush(Color.FromArgb(50, Color.OrangeRed));
+            else
+            if (cell.Health <= cell.MaxHealth - cell.MaxHealth * 0.8 && cell.Health >= 0)
+                polygon.Fill = new SolidBrush(Color.FromArgb(50, Color.Red));
             polygon.Stroke = new Pen(Color.Green, 1);
             polyOverlay.Polygons.Add(polygon);
             gmap.Overlays.Add(polyOverlay);
@@ -177,23 +305,104 @@ namespace InfectionSpreadSimulator
 
         private void inputDataInPolygonDrawer()
         {
-            string value; 
+            string value;
+            removePolygons();
             value = Statics.ProgramKey.OpenSubKey(Statics.ProgramsRegistryKeyName).GetValue(Statics.KievskiyDistrict).ToString();
-            drawPolygons(value, Statics.KievskiyDistrict);
+            drawPolygons(value, Statics.KievskiyDistrict, districts[0]);
             value = Statics.ProgramKey.OpenSubKey(Statics.ProgramsRegistryKeyName).GetValue(Statics.PrimorskiyDistrict).ToString();
-            drawPolygons(value, Statics.PrimorskiyDistrict);
+            drawPolygons(value, Statics.PrimorskiyDistrict, districts[1]);
             value = Statics.ProgramKey.OpenSubKey(Statics.ProgramsRegistryKeyName).GetValue(Statics.MalinovkiyDistrict).ToString();
-            drawPolygons(value, Statics.MalinovkiyDistrict);
+            drawPolygons(value, Statics.MalinovkiyDistrict, districts[2]);
             value = Statics.ProgramKey.OpenSubKey(Statics.ProgramsRegistryKeyName).GetValue(Statics.SuvorovskiyDistrict).ToString();
-            drawPolygons(value, Statics.SuvorovskiyDistrict);
+            drawPolygons(value, Statics.SuvorovskiyDistrict, districts[3]);
             value = Statics.ProgramKey.OpenSubKey(Statics.ProgramsRegistryKeyName).GetValue(Statics.PosyolokKotovskiy).ToString();
-            drawPolygons(value, Statics.SuvorovskiyDistrict);
+            drawPolygons(value, Statics.PosyolokKotovskiy, districts[4]);
         }
+
+
 
         private void button1_Click(object sender, EventArgs e)
         {
-            polygonOdessaFormer();
-            Application.Restart();
+            //polygonOdessaFormer();
+            //Application.Restart();
+            //gmap.PolygonsEnabled = false;
+
+            inputDataInPolygonDrawer();
         }
+
+        private void removePolygons()
+        {
+            polyOverlay.Polygons.Clear();
+            gmap.Overlays.Clear();
+        }
+
+        private void update_Tick(object sender, EventArgs e)
+        {
+            for (int i = 0; i < 5; i++)
+            {
+                districtrand = rnd.Next(1, 101);
+                if (districts[i].IsInfected)
+                {
+                    if (districts[i].Health > 0)
+                    {
+                        districts[i].Health = districts[i].Health - districts[i].HealthDecrease;
+                    }
+                    if (districtrand <= districts[i].Health / 3)
+                    {
+                        districts[i].IsInfected = false;
+                        //districts[i].Health = districts[i].Health + 1;
+                    }
+                }
+                else
+                {
+                    if (districts[i].Health < 100)
+                    {
+                        districts[i].Health = districts[i].Health + districts[i].HealthDecrease;
+                    }
+                }
+                textBox1.Text = Convert.ToString(districts[0].IsInfected) + " " + Convert.ToString(districts[0].Health);
+                textBox2.Text = Convert.ToString(districts[1].IsInfected) + " " + Convert.ToString(districts[1].Health);
+                textBox3.Text = Convert.ToString(districts[2].IsInfected) + " " + Convert.ToString(districts[2].Health);
+                textBox4.Text = Convert.ToString(districts[3].IsInfected) + " " + Convert.ToString(districts[3].Health);
+                textBox5.Text = Convert.ToString(districts[4].IsInfected) + " " + Convert.ToString(districts[4].Health);
+
+                if (districts[i].Health > 100)
+                    districts[i].Health = 100;
+                if (districts[i].Health < 0)
+                    districts[i].Health = 0;
+            }
+            inputDataInPolygonDrawer();
+
+            if (!districts[0].IsInfected && !districts[1].IsInfected && !districts[2].IsInfected && !districts[3].IsInfected && !districts[4].IsInfected)
+            {
+                virusInfection.IsActive = false;
+                virus.Enabled = false;
+                button2.BackColor = Color.LightGreen;
+                button2.Text = "Activate Virus";
+            }
+        }
+
+        private void rndStart_Click(object sender, EventArgs e)
+        {
+            if (virusInfection.IsActive == false)
+            {
+                virusInfection.IsActive = true;
+                int startRegionRnd = rnd.Next(0, 5);
+                districts[startRegionRnd].IsInfected = true;
+                //Enables the virus's timer
+                virus.Enabled = true;
+                button2.BackColor = Color.Red;
+                button2.Text = "Deactivate Virus";
+            }
+            else
+            {
+                virus.Enabled = false;
+                virusInfection.IsActive = false;
+                button2.BackColor = Color.LightGreen;
+                button2.Text = "Activate Virus";
+            }
+        }
+
+        
     }
 }
