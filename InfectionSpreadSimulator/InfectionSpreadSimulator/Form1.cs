@@ -30,6 +30,11 @@ namespace InfectionSpreadSimulator
         {
             InitializeComponent();
         }
+        Cell kiev=new Cell("kievskiy",6);
+            Cell prim=new Cell("primorskiy",7);
+            Cell malin=new Cell("malinovskiy",8);
+          Cell suvor=new Cell("suvorovskiy",9);
+            Cell paskot =new Cell("kotovskiyPosyolok",10);
         Edge kievprim = new Edge("kievNPrimEdge", 70);
         Edge kievmalin = new Edge("kievNMalinEdge", 60);
         Edge malinprim = new Edge("malinNPrimEdge", 50);
@@ -59,11 +64,11 @@ namespace InfectionSpreadSimulator
                 }
             }
 
-            districts.Add(new Cell("kievskiy",6));
-            districts.Add(new Cell("primorskiy",7));
-            districts.Add(new Cell("malinovskiy",8));
-            districts.Add(new Cell("suvorovskiy",9));
-            districts.Add(new Cell("kotovskiyPosyolok",10));
+            districts.Add(kiev);
+            districts.Add(prim);
+            districts.Add(malin);
+            districts.Add(suvor);
+            districts.Add(paskot);
 
            
             edgeBtwDistricts.Add(kievprim);
@@ -344,7 +349,9 @@ namespace InfectionSpreadSimulator
         private void update_Tick(object sender, EventArgs e)
         {
             for (int i = 0; i < 5; i++)
-            {
+            {   if (virusInfection.IsActive)
+                    button6.Enabled = false;
+                else button6.Enabled = true;
                 districtrand = rnd.Next(1, 101);
                 if (districts[i].IsInfected)
                 {
@@ -421,6 +428,40 @@ namespace InfectionSpreadSimulator
                 suvorprim.InfectedChance = Convert.ToInt32(textBox11.Text);
             if (comboBox1.Text.Equals("Suvorovskiy Poskot"))
                 suvorposkot.InfectedChance = Convert.ToInt32(textBox11.Text);
+        }
+
+        private void button4_Click(object sender, EventArgs e)
+        {
+            if (comboBox2.Text.Equals("Kievskiy"))
+                kiev.HealthDecrease = Convert.ToInt32(textBox6.Text);
+            if (comboBox2.Text.Equals("Malinovskiy"))
+                malin.HealthDecrease = Convert.ToInt32(textBox6.Text);
+            if (comboBox2.Text.Equals("Primorskiy"))
+                prim.HealthDecrease = Convert.ToInt32(textBox6.Text);
+            if (comboBox2.Text.Equals("Suvorovskiy"))
+               suvor.HealthDecrease = Convert.ToInt32(textBox6.Text);
+            if (comboBox2.Text.Equals("Poselok Kotovskogo"))
+                paskot.HealthDecrease = Convert.ToInt32(textBox6.Text);
+        }
+
+        private void button5_Click(object sender, EventArgs e)
+        {
+            if (comboBox2.Text.Equals("Kievskiy"))
+                kiev.MaxHealth = Convert.ToInt32(textBox6.Text);
+            if (comboBox2.Text.Equals("Malinovskiy"))
+                malin.MaxHealth = Convert.ToInt32(textBox6.Text);
+            if (comboBox2.Text.Equals("Primorskiy"))
+                prim.MaxHealth = Convert.ToInt32(textBox6.Text);
+            if (comboBox2.Text.Equals("Suvorovskiy"))
+                suvor.MaxHealth = Convert.ToInt32(textBox6.Text);
+            if (comboBox2.Text.Equals("Poselok Kotovskogo"))
+                paskot.MaxHealth = Convert.ToInt32(textBox6.Text);
+        }
+
+        private void button6_Click(object sender, EventArgs e)
+        {
+            for (int i = 0; i < 5; i++)
+                districts[i].Health = districts[i].MaxHealth;
         }
     }
 }
