@@ -30,7 +30,12 @@ namespace InfectionSpreadSimulator
         {
             InitializeComponent();
         }
-
+        Edge kievprim = new Edge("kievNPrimEdge", 70);
+        Edge kievmalin = new Edge("kievNMalinEdge", 60);
+        Edge malinprim = new Edge("malinNPrimEdge", 50);
+        Edge malinsuvor = new Edge("malinNSuvorEdge", 40);
+        Edge suvorprim = new Edge("suvorNPrimEdge", 30);
+        Edge suvorposkot = new Edge("suvorNPosKotEdge", 20);
         private void Form1_Load(object sender, EventArgs e)
         {
             if (FirstStartOnThisComputer() == true)
@@ -59,14 +64,14 @@ namespace InfectionSpreadSimulator
             districts.Add(new Cell("malinovskiy",8));
             districts.Add(new Cell("suvorovskiy",9));
             districts.Add(new Cell("kotovskiyPosyolok",10));
- 
 
-            edgeBtwDistricts.Add(new Edge ("kievNPrimEdge", 70));
-            edgeBtwDistricts.Add(new Edge("kievNMalinEdge", 60));
-            edgeBtwDistricts.Add(new Edge("malinNPrimEdge", 50));
-            edgeBtwDistricts.Add(new Edge("malinNSuvorEdge", 40));
-            edgeBtwDistricts.Add(new Edge("suvorNPrimEdge", 30));
-            edgeBtwDistricts.Add(new Edge("suvorNPosKotEdge", 20));
+           
+            edgeBtwDistricts.Add(kievprim);
+            edgeBtwDistricts.Add(kievmalin);
+            edgeBtwDistricts.Add(malinprim);
+            edgeBtwDistricts.Add(malinsuvor);
+            edgeBtwDistricts.Add(suvorprim);
+            edgeBtwDistricts.Add(suvorposkot);
 
             //draw polygons
             inputDataInPolygonDrawer();
@@ -403,6 +408,19 @@ namespace InfectionSpreadSimulator
             }
         }
 
-        
+        private void button3_Click(object sender, EventArgs e)
+        {   if (comboBox1.Text.Equals("Kievskiy Primorskiy"))
+            kievprim.InfectedChance = Convert.ToInt32(textBox11.Text);
+            if (comboBox1.Text.Equals("Kievskiy Malinovskiy"))
+                kievmalin.InfectedChance = Convert.ToInt32(textBox11.Text);
+            if (comboBox1.Text.Equals("Malinovskiy Primorskiy"))
+                malinprim.InfectedChance = Convert.ToInt32(textBox11.Text);
+            if (comboBox1.Text.Equals("Malinovskiy Suvorovskiy"))
+                malinsuvor.InfectedChance = Convert.ToInt32(textBox11.Text);
+            if (comboBox1.Text.Equals("Suvorovskiy Primorskiy"))
+                suvorprim.InfectedChance = Convert.ToInt32(textBox11.Text);
+            if (comboBox1.Text.Equals("Suvorovskiy Poskot"))
+                suvorposkot.InfectedChance = Convert.ToInt32(textBox11.Text);
+        }
     }
 }
