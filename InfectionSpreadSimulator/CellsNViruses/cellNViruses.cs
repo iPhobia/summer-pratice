@@ -23,8 +23,8 @@ namespace CellsNVirus
 
         public int HealthDecrease
         {
-            get;
-            set;
+            get { return healthDecrease; }
+            set { healthDecrease = value; }
         }
         public string Name
         {
