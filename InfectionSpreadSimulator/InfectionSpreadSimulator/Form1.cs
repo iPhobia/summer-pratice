@@ -78,6 +78,13 @@ namespace InfectionSpreadSimulator
             edgeBtwDistricts.Add(suvorprim);
             edgeBtwDistricts.Add(suvorposkot);
 
+            for(int i = 0; i < districts.Count; i++)
+            {
+                comboBox3.Items.Add(districts[i].Name);
+            }
+
+            dataGridView1.RowCount = 5;
+
             //draw polygons
             inputDataInPolygonDrawer();
         }
@@ -348,10 +355,19 @@ namespace InfectionSpreadSimulator
 
         private void update_Tick(object sender, EventArgs e)
         {
+            if (virusInfection.IsActive)
+            {
+                button6.Enabled = false;
+                checkedListBox1.Enabled = false;
+                comboBox3.Enabled = false;
+            }
+            else
+            {
+                button6.Enabled = true;
+                checkedListBox1.Enabled = true;
+            }
             for (int i = 0; i < 5; i++)
-            {   if (virusInfection.IsActive)
-                    button6.Enabled = false;
-                else button6.Enabled = true;
+            {  
                 districtrand = rnd.Next(1, 101);
                 if (districts[i].IsInfected)
                 {
@@ -372,14 +388,13 @@ namespace InfectionSpreadSimulator
                         districts[i].Health = districts[i].Health + districts[i].HealthDecrease;
                     }
                 }
-                textBox1.Text = Convert.ToString(districts[0].IsInfected) + " " + Convert.ToString(districts[0].Health);
-                textBox2.Text = Convert.ToString(districts[1].IsInfected) + " " + Convert.ToString(districts[1].Health);
-                textBox3.Text = Convert.ToString(districts[2].IsInfected) + " " + Convert.ToString(districts[2].Health);
-                textBox4.Text = Convert.ToString(districts[3].IsInfected) + " " + Convert.ToString(districts[3].Health);
-                textBox5.Text = Convert.ToString(districts[4].IsInfected) + " " + Convert.ToString(districts[4].Health);
 
-                if (districts[i].Health > 100)
-                    districts[i].Health = 100;
+                dataGridView1.Rows[i].Cells[0].Value = districts[i].Name;
+                dataGridView1.Rows[i].Cells[1].Value = districts[i].Health;
+                dataGridView1.Rows[i].Cells[2].Value = districts[i].IsInfected;
+
+                if (districts[i].Health > districts[i].MaxHealth)
+                    districts[i].Health = districts[i].MaxHealth;
                 if (districts[i].Health < 0)
                     districts[i].Health = 0;
             }
@@ -394,24 +409,48 @@ namespace InfectionSpreadSimulator
             }
         }
 
-        private void rndStart_Click(object sender, EventArgs e)
+        private void start_Click(object sender, EventArgs e)
         {
-            if (virusInfection.IsActive == false)
+            if (checkedListBox1.Text == "Choose the region to infect")
             {
-                virusInfection.IsActive = true;
-                int startRegionRnd = rnd.Next(0, 5);
-                districts[startRegionRnd].IsInfected = true;
-                //Enables the virus's timer
-                virus.Enabled = true;
-                button2.BackColor = Color.Red;
-                button2.Text = "Deactivate Virus";
+                if (virusInfection.IsActive == false)
+                {
+                    virusInfection.IsActive = true;
+                    int startRegionRnd = comboBox3.SelectedIndex;
+                    districts[startRegionRnd].IsInfected = true;
+                    //Enables the virus's timer
+                    virus.Enabled = true;
+                    button2.BackColor = Color.Red;
+                    button2.Text = "Deactivate Virus";     
+                }
+                else
+                {
+                    virus.Enabled = false;
+                    virusInfection.IsActive = false;
+                    button2.BackColor = Color.Lime;
+                    button2.Text = "Activate Virus";
+                }
             }
             else
+            if (checkedListBox1.Text == "Infect a randomly chosen region")
             {
-                virus.Enabled = false;
-                virusInfection.IsActive = false;
-                button2.BackColor = Color.LightGreen;
-                button2.Text = "Activate Virus";
+                if (virusInfection.IsActive == false)
+                {
+                    virusInfection.IsActive = true;
+                    int startRegionRnd = rnd.Next(0, 5);
+                    districts[startRegionRnd].IsInfected = true;
+                    //Enables the virus's timer
+                    virus.Enabled = true;
+                    button2.BackColor = Color.Red;
+                    button2.Text = "Deactivate Virus";
+                }
+                else
+                {
+                    virus.Enabled = false;
+                    virusInfection.IsActive = false;
+                    button2.BackColor = Color.Lime;
+                    button2.Text = "Activate Virus";
+                }
             }
         }
 
@@ -462,6 +501,28 @@ namespace InfectionSpreadSimulator
         {
             for (int i = 0; i < 5; i++)
                 districts[i].Health = districts[i].MaxHealth;
+        }
+
+        private void checkedListBox1_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            if (checkedListBox1.Text == "Choose the region to infect")
+            {
+                comboBox3.Enabled = true;
+                checkedListBox1.SetItemChecked(1, false);
+                checkedListBox1.SetItemChecked(2, false);
+            }
+            if (checkedListBox1.Text == "Infect a randomly chosen region")
+            {
+                comboBox3.Enabled = false;
+                checkedListBox1.SetItemChecked(0, false);
+                checkedListBox1.SetItemChecked(2, false);
+            }
+            if (checkedListBox1.Text == "Load the last saved simulation")
+            {
+                comboBox3.Enabled = false;
+                checkedListBox1.SetItemChecked(0, false);
+                checkedListBox1.SetItemChecked(1, false);
+            }
         }
     }
 }
