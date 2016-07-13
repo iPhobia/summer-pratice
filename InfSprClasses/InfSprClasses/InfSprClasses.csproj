@@ -4,11 +4,11 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{D9239486-6CD4-42D6-8919-A6BAA390022C}</ProjectGuid>
+    <ProjectGuid>{729B6CCE-EC14-4B9D-BD7A-23F65B8AEADF}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>CellsNViruses</RootNamespace>
-    <AssemblyName>CellsNViruses</AssemblyName>
+    <RootNamespace>InfSprClasses</RootNamespace>
+    <AssemblyName>InfSprClasses</AssemblyName>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
   </PropertyGroup>
@@ -39,7 +39,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="cellNViruses.cs" />
+    <Compile Include="InfSprClassLibrary.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

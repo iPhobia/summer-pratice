@@ -3,9 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 2013
 VisualStudioVersion = 12.0.21005.1
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "InfectionSpreadSimulator", "InfectionSpreadSimulator\InfectionSpreadSimulator.csproj", "{9C6CE2D3-6E83-4B45-A531-F3597E1E3E81}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "InfSprClasses", "..\InfSprClasses\InfSprClasses\InfSprClasses.csproj", "{729B6CCE-EC14-4B9D-BD7A-23F65B8AEADF}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "InfSprClasses", "InfSprClasses\InfSprClasses.csproj", "{729B6CCE-EC14-4B9D-BD7A-23F65B8AEADF}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -13,10 +11,6 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{9C6CE2D3-6E83-4B45-A531-F3597E1E3E81}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{9C6CE2D3-6E83-4B45-A531-F3597E1E3E81}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{9C6CE2D3-6E83-4B45-A531-F3597E1E3E81}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{9C6CE2D3-6E83-4B45-A531-F3597E1E3E81}.Release|Any CPU.Build.0 = Release|Any CPU
 		{729B6CCE-EC14-4B9D-BD7A-23F65B8AEADF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{729B6CCE-EC14-4B9D-BD7A-23F65B8AEADF}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{729B6CCE-EC14-4B9D-BD7A-23F65B8AEADF}.Release|Any CPU.ActiveCfg = Release|Any CPU

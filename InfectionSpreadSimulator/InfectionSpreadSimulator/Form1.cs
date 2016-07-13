@@ -9,9 +9,10 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using GMap.NET.WindowsForms;
 using System.IO;
+using System.Runtime.Serialization.Formatters.Binary;
 using Microsoft.Win32;
 using System.Web.Script.Serialization;
-using CellsNVirus;
+using InfSprClasses;
 
 namespace InfectionSpreadSimulator
 {
@@ -29,6 +30,7 @@ namespace InfectionSpreadSimulator
         public Form1()
         {
             InitializeComponent();
+            this.FormClosing += new FormClosingEventHandler(Form1_FormClosing);
         }
         Cell kiev=new Cell("kievskiy",6);
             Cell prim=new Cell("primorskiy",7);
@@ -367,8 +369,8 @@ namespace InfectionSpreadSimulator
                 checkedListBox1.Enabled = true;
             }
             for (int i = 0; i < 5; i++)
-            {  
-                districtrand = rnd.Next(1, 101);
+            {
+                districtrand = rnd.Next(1, districts[i].MaxHealth + 1);
                 if (districts[i].IsInfected)
                 {
                     if (districts[i].Health > 0)
@@ -378,12 +380,11 @@ namespace InfectionSpreadSimulator
                     if (districtrand <= districts[i].Health / 3)
                     {
                         districts[i].IsInfected = false;
-                        //districts[i].Health = districts[i].Health + 1;
                     }
                 }
                 else
                 {
-                    if (districts[i].Health < 100)
+                    if (districts[i].Health < districts[i].MaxHealth)
                     {
                         districts[i].Health = districts[i].Health + districts[i].HealthDecrease;
                     }
@@ -403,56 +404,70 @@ namespace InfectionSpreadSimulator
             if (!districts[0].IsInfected && !districts[1].IsInfected && !districts[2].IsInfected && !districts[3].IsInfected && !districts[4].IsInfected)
             {
                 virusInfection.IsActive = false;
-                virus.Enabled = false;
-                button2.BackColor = Color.LightGreen;
-                button2.Text = "Activate Virus";
             }
         }
 
         private void start_Click(object sender, EventArgs e)
         {
-            if (checkedListBox1.Text == "Choose the region to infect")
+            if (virusInfection.IsActive == false)
             {
-                if (virusInfection.IsActive == false)
+                int startRegion;
+                if (checkedListBox1.Text == "Choose the region to infect")
                 {
+                    startRegion = comboBox3.SelectedIndex;
+                    virusInfection.InfectRegion(districts[startRegion]);
                     virusInfection.IsActive = true;
-                    int startRegionRnd = comboBox3.SelectedIndex;
-                    districts[startRegionRnd].IsInfected = true;
-                    //Enables the virus's timer
-                    virus.Enabled = true;
-                    button2.BackColor = Color.Red;
-                    button2.Text = "Deactivate Virus";     
                 }
                 else
+                if (checkedListBox1.Text == "Infect a randomly chosen region")
                 {
-                    virus.Enabled = false;
-                    virusInfection.IsActive = false;
-                    button2.BackColor = Color.Lime;
-                    button2.Text = "Activate Virus";
+                    startRegion = rnd.Next(0, 5);
+                    virusInfection.InfectRegion(districts[startRegion]);
+                    virusInfection.IsActive = true;
+                }
+                else if (checkedListBox1.Text == "Load the saved simulation")
+                {
+                    FolderBrowserDialog fbd = new FolderBrowserDialog();
+                    fbd.SelectedPath = Statics.ProgramKey.OpenSubKey(Statics.ProgramsRegistryKeyName).GetValue(Statics.NameOfStringParameterInRegistryForFolderWithSaves).ToString() + @"\";
+                    if (fbd.ShowDialog() == DialogResult.OK)
+                    {
+                        if (File.Exists(fbd.SelectedPath + @"\" + "InfSprSim.cll"))
+                        {
+                            Stream FileStream = File.OpenRead(fbd.SelectedPath + @"\" + "InfSprSim.cll");
+                            BinaryFormatter deserializer = new BinaryFormatter();
+                            districts = (List<Cell>)deserializer.Deserialize(FileStream);
+                            FileStream.Close();
+                        }
+                        if (File.Exists(fbd.SelectedPath + @"\" + "InfSprSim.edg"))
+                        {
+                            Stream FileStream = File.OpenRead(fbd.SelectedPath + @"\" + "InfSprSim.edg");
+                            BinaryFormatter deserializer = new BinaryFormatter();
+                            edgeBtwDistricts = (List<Edge>)deserializer.Deserialize(FileStream);
+                            FileStream.Close();
+                        }
+                        if (File.Exists(fbd.SelectedPath + @"\" + "InfSprSim.vir"))
+                        {
+                            Stream FileStream = File.OpenRead(fbd.SelectedPath + @"\" + "InfSprSim.vir");
+                            BinaryFormatter deserializer = new BinaryFormatter();
+                            virusInfection = (Virus)deserializer.Deserialize(FileStream);
+                            FileStream.Close();
+                        }
+                        virus.Enabled = true;
+                        if (districts[0].IsInfected || districts[1].IsInfected || districts[2].IsInfected || districts[3].IsInfected || districts[4].IsInfected)
+                        {
+                            button2.BackColor = Color.Red;
+                            button2.Text = "Deactivate Virus";
+                        }
+                    }
                 }
             }
             else
-            if (checkedListBox1.Text == "Infect a randomly chosen region")
             {
-                if (virusInfection.IsActive == false)
-                {
-                    virusInfection.IsActive = true;
-                    int startRegionRnd = rnd.Next(0, 5);
-                    districts[startRegionRnd].IsInfected = true;
-                    //Enables the virus's timer
-                    virus.Enabled = true;
-                    button2.BackColor = Color.Red;
-                    button2.Text = "Deactivate Virus";
-                }
-                else
-                {
-                    virus.Enabled = false;
-                    virusInfection.IsActive = false;
-                    button2.BackColor = Color.Lime;
-                    button2.Text = "Activate Virus";
-                }
+                virusInfection.IsActive = false;
             }
         }
+
+        
 
         private void button3_Click(object sender, EventArgs e)
         {   if (comboBox1.Text.Equals("Kievskiy Primorskiy"))
@@ -486,21 +501,39 @@ namespace InfectionSpreadSimulator
         private void button5_Click(object sender, EventArgs e)
         {
             if (comboBox2.Text.Equals("Kievskiy"))
-                kiev.MaxHealth = Convert.ToInt32(textBox6.Text);
+            {
+                kiev.MaxHealth = Convert.ToInt32(textBox7.Text);
+                kiev.Health = kiev.MaxHealth;
+            }
             if (comboBox2.Text.Equals("Malinovskiy"))
-                malin.MaxHealth = Convert.ToInt32(textBox6.Text);
+            {
+                malin.MaxHealth = Convert.ToInt32(textBox7.Text);
+                malin.Health = malin.MaxHealth;
+            }
             if (comboBox2.Text.Equals("Primorskiy"))
-                prim.MaxHealth = Convert.ToInt32(textBox6.Text);
+            {
+                prim.MaxHealth = Convert.ToInt32(textBox7.Text);
+                prim.Health = prim.MaxHealth;
+            }
             if (comboBox2.Text.Equals("Suvorovskiy"))
-                suvor.MaxHealth = Convert.ToInt32(textBox6.Text);
+            {
+                suvor.MaxHealth = Convert.ToInt32(textBox7.Text);
+                suvor.Health = suvor.MaxHealth;
+            }
             if (comboBox2.Text.Equals("Poselok Kotovskogo"))
-                paskot.MaxHealth = Convert.ToInt32(textBox6.Text);
+            {
+                paskot.MaxHealth = Convert.ToInt32(textBox7.Text);
+                paskot.Health = paskot.MaxHealth;
+            }
         }
 
         private void button6_Click(object sender, EventArgs e)
         {
             for (int i = 0; i < 5; i++)
+            {
                 districts[i].Health = districts[i].MaxHealth;
+                districts[i].IsInfected = false;
+            }
         }
 
         private void checkedListBox1_SelectedIndexChanged(object sender, EventArgs e)
@@ -517,11 +550,64 @@ namespace InfectionSpreadSimulator
                 checkedListBox1.SetItemChecked(0, false);
                 checkedListBox1.SetItemChecked(2, false);
             }
-            if (checkedListBox1.Text == "Load the last saved simulation")
+            if (checkedListBox1.Text == "Load the saved simulation")
             {
                 comboBox3.Enabled = false;
                 checkedListBox1.SetItemChecked(0, false);
                 checkedListBox1.SetItemChecked(1, false);
+            }
+        }
+
+        private void Form1_FormClosing(Object sender, FormClosingEventArgs e)
+        {
+            update.Enabled = false;
+            virus.Enabled = false;
+            DialogResult dr = MessageBox.Show("Do You Want to Save Current Simulation?", "", MessageBoxButtons.YesNoCancel, MessageBoxIcon.Warning);
+            if (dr == DialogResult.Yes)
+            {
+                if (Statics.ProgramKey.OpenSubKey(Statics.ProgramsRegistryKeyName).GetValue(Statics.NameOfStringParameterInRegistryForFolderWithSaves) == null)
+                {
+                    FolderBrowserDialog fbd = new FolderBrowserDialog();
+                    if (fbd.ShowDialog() == DialogResult.OK)
+                    {
+                        Statics.ProgramKey.OpenSubKey(Statics.ProgramsRegistryKeyName, true).SetValue(Statics.NameOfStringParameterInRegistryForFolderWithSaves, fbd.SelectedPath);
+                        SaveSerializer.Serialize(districts, edgeBtwDistricts, virusInfection);
+                    }
+                }
+                else
+                {
+                    SaveSerializer.Serialize(districts, edgeBtwDistricts, virusInfection);
+                }
+            }
+            else
+                if (dr == DialogResult.No)
+                {
+
+                }
+                else
+                    if (dr == DialogResult.Cancel)
+                    {
+                        e.Cancel = true;
+                        update.Enabled = true;
+                        virus.Enabled = true;
+                    }
+        }
+
+        private void isVirusActive_Tick(object sender, EventArgs e)
+        {
+            if (!virusInfection.IsActive)
+            {
+                //Disables the virus's timer
+                virus.Enabled = false;
+                button2.BackColor = Color.Lime;
+                button2.Text = "Activate Virus";
+            }
+            else 
+            {
+                //Enables the virus's timer
+                virus.Enabled = true;
+                button2.BackColor = Color.Red;
+                button2.Text = "Deactivate Virus";   
             }
         }
     }
