@@ -25,7 +25,7 @@ namespace InfectionSpreadSimulator
         Random rnd = new Random();
         int districtrand;
         Virus virusInfection = new Virus();
-
+        int numcheck=-1;
         //List<GMap.NET.PointLatLng> polygons = new List<GMap.NET.PointLatLng>;
         public Form1()
         {
@@ -470,36 +470,86 @@ namespace InfectionSpreadSimulator
         
 
         private void button3_Click(object sender, EventArgs e)
-        {   if (comboBox1.Text.Equals("Kievskiy Primorskiy"))
-            kievprim.InfectedChance = Convert.ToInt32(textBox11.Text);
-            if (comboBox1.Text.Equals("Kievskiy Malinovskiy"))
-                kievmalin.InfectedChance = Convert.ToInt32(textBox11.Text);
-            if (comboBox1.Text.Equals("Malinovskiy Primorskiy"))
-                malinprim.InfectedChance = Convert.ToInt32(textBox11.Text);
-            if (comboBox1.Text.Equals("Malinovskiy Suvorovskiy"))
-                malinsuvor.InfectedChance = Convert.ToInt32(textBox11.Text);
-            if (comboBox1.Text.Equals("Suvorovskiy Primorskiy"))
-                suvorprim.InfectedChance = Convert.ToInt32(textBox11.Text);
-            if (comboBox1.Text.Equals("Suvorovskiy Poskot"))
-                suvorposkot.InfectedChance = Convert.ToInt32(textBox11.Text);
+        {
+            if (comboBox1.Text.Equals(""))
+             MessageBox.Show("At first you have to choose the edge");
+            else if (textBox11.Text == "")
+                MessageBox.Show("At first you have to input the data");
+            else
+            {
+                for (int i = 0; i < textBox11.TextLength; i++)
+             
+                    if (!char.IsDigit(textBox11.Text, i))
+                    {
+                        numcheck++;
+                        break;
+                    }
+                        if(numcheck!=-1)
+                            MessageBox.Show("Only digits are allowed");
+                        else
+                    {
+                        if (comboBox1.Text.Equals("Kievskiy Primorskiy"))
+                            kievprim.InfectedChance = Convert.ToInt32(textBox11.Text);
+                        if (comboBox1.Text.Equals("Kievskiy Malinovskiy"))
+                            kievmalin.InfectedChance = Convert.ToInt32(textBox11.Text);
+                        if (comboBox1.Text.Equals("Malinovskiy Primorskiy"))
+                            malinprim.InfectedChance = Convert.ToInt32(textBox11.Text);
+                        if (comboBox1.Text.Equals("Malinovskiy Suvorovskiy"))
+                            malinsuvor.InfectedChance = Convert.ToInt32(textBox11.Text);
+                        if (comboBox1.Text.Equals("Suvorovskiy Primorskiy"))
+                            suvorprim.InfectedChance = Convert.ToInt32(textBox11.Text);
+                        if (comboBox1.Text.Equals("Suvorovskiy Poskot"))
+                            suvorposkot.InfectedChance = Convert.ToInt32(textBox11.Text);
+                    }
+            }
         }
 
         private void button4_Click(object sender, EventArgs e)
         {
-            if (comboBox2.Text.Equals("Kievskiy"))
-                kiev.HealthDecrease = Convert.ToInt32(textBox6.Text);
-            if (comboBox2.Text.Equals("Malinovskiy"))
-                malin.HealthDecrease = Convert.ToInt32(textBox6.Text);
-            if (comboBox2.Text.Equals("Primorskiy"))
-                prim.HealthDecrease = Convert.ToInt32(textBox6.Text);
-            if (comboBox2.Text.Equals("Suvorovskiy"))
-               suvor.HealthDecrease = Convert.ToInt32(textBox6.Text);
-            if (comboBox2.Text.Equals("Poselok Kotovskogo"))
-                paskot.HealthDecrease = Convert.ToInt32(textBox6.Text);
+            if (comboBox2.Text.Equals(""))
+                MessageBox.Show("At first you have to choose the district");
+            if (textBox6.Text=="")
+                MessageBox.Show("At first you have to input data");
+            for (int i = 0; i < textBox6.TextLength; i++)
+
+                if (!char.IsDigit(textBox6.Text, i))
+                {
+                    numcheck++;
+                    break;
+                }
+            if (numcheck != -1)
+                MessageBox.Show("Only digits are allowed");
+            else
+            {
+                if (comboBox2.Text.Equals("Kievskiy"))
+                    kiev.HealthDecrease = Convert.ToInt32(textBox6.Text);
+                if (comboBox2.Text.Equals("Malinovskiy"))
+                    malin.HealthDecrease = Convert.ToInt32(textBox6.Text);
+                if (comboBox2.Text.Equals("Primorskiy"))
+                    prim.HealthDecrease = Convert.ToInt32(textBox6.Text);
+                if (comboBox2.Text.Equals("Suvorovskiy"))
+                    suvor.HealthDecrease = Convert.ToInt32(textBox6.Text);
+                if (comboBox2.Text.Equals("Poselok Kotovskogo"))
+                    paskot.HealthDecrease = Convert.ToInt32(textBox6.Text);
+            }
         }
 
         private void button5_Click(object sender, EventArgs e)
         {
+            if (comboBox2.Text.Equals(""))
+                MessageBox.Show("At first you have to choose the district");
+            if (textBox7.Text == "")
+                MessageBox.Show("At first you have to input data");
+            for (int i = 0; i < textBox7.TextLength; i++)
+
+                if (!char.IsDigit(textBox7.Text, i))
+                {
+                    numcheck++;
+                    break;
+                }
+            if (numcheck != -1)
+                MessageBox.Show("Only digits are allowed");
+            else
             if (comboBox2.Text.Equals("Kievskiy"))
             {
                 kiev.MaxHealth = Convert.ToInt32(textBox7.Text);
@@ -609,6 +659,16 @@ namespace InfectionSpreadSimulator
                 button2.BackColor = Color.Red;
                 button2.Text = "Deactivate Virus";   
             }
+        }
+
+        private void tabPage1_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void textBox11_TextChanged(object sender, EventArgs e)
+        {
+
         }
     }
 }
