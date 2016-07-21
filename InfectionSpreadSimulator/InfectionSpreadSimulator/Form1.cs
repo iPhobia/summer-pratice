@@ -409,61 +409,66 @@ namespace InfectionSpreadSimulator
 
         private void start_Click(object sender, EventArgs e)
         {
-            if (virusInfection.IsActive == false)
-            {
-                int startRegion;
-                if (checkedListBox1.Text == "Choose the region to infect")
-                {
-                    startRegion = comboBox3.SelectedIndex;
-                    virusInfection.InfectRegion(districts[startRegion]);
-                    virusInfection.IsActive = true;
-                }
-                else
-                if (checkedListBox1.Text == "Infect a randomly chosen region")
-                {
-                    startRegion = rnd.Next(0, 5);
-                    virusInfection.InfectRegion(districts[startRegion]);
-                    virusInfection.IsActive = true;
-                }
-                else if (checkedListBox1.Text == "Load the saved simulation")
-                {
-                    FolderBrowserDialog fbd = new FolderBrowserDialog();
-                    fbd.SelectedPath = Statics.ProgramKey.OpenSubKey(Statics.ProgramsRegistryKeyName).GetValue(Statics.NameOfStringParameterInRegistryForFolderWithSaves).ToString() + @"\";
-                    if (fbd.ShowDialog() == DialogResult.OK)
-                    {
-                        if (File.Exists(fbd.SelectedPath + @"\" + "InfSprSim.cll"))
-                        {
-                            Stream FileStream = File.OpenRead(fbd.SelectedPath + @"\" + "InfSprSim.cll");
-                            BinaryFormatter deserializer = new BinaryFormatter();
-                            districts = (List<Cell>)deserializer.Deserialize(FileStream);
-                            FileStream.Close();
-                        }
-                        if (File.Exists(fbd.SelectedPath + @"\" + "InfSprSim.edg"))
-                        {
-                            Stream FileStream = File.OpenRead(fbd.SelectedPath + @"\" + "InfSprSim.edg");
-                            BinaryFormatter deserializer = new BinaryFormatter();
-                            edgeBtwDistricts = (List<Edge>)deserializer.Deserialize(FileStream);
-                            FileStream.Close();
-                        }
-                        if (File.Exists(fbd.SelectedPath + @"\" + "InfSprSim.vir"))
-                        {
-                            Stream FileStream = File.OpenRead(fbd.SelectedPath + @"\" + "InfSprSim.vir");
-                            BinaryFormatter deserializer = new BinaryFormatter();
-                            virusInfection = (Virus)deserializer.Deserialize(FileStream);
-                            FileStream.Close();
-                        }
-                        virus.Enabled = true;
-                        if (districts[0].IsInfected || districts[1].IsInfected || districts[2].IsInfected || districts[3].IsInfected || districts[4].IsInfected)
-                        {
-                            button2.BackColor = Color.Red;
-                            button2.Text = "Deactivate Virus";
-                        }
-                    }
-                }
-            }
+            if (comboBox3.Text.Equals(""))
+                MessageBox.Show("At first you have to choose the district");
             else
             {
-                virusInfection.IsActive = false;
+                if (virusInfection.IsActive == false)
+                {
+                    int startRegion;
+                    if (checkedListBox1.Text == "Choose the region to infect")
+                    {
+                        startRegion = comboBox3.SelectedIndex;
+                        virusInfection.InfectRegion(districts[startRegion]);
+                        virusInfection.IsActive = true;
+                    }
+                    else
+                        if (checkedListBox1.Text == "Infect a randomly chosen region")
+                        {
+                            startRegion = rnd.Next(0, 5);
+                            virusInfection.InfectRegion(districts[startRegion]);
+                            virusInfection.IsActive = true;
+                        }
+                        else if (checkedListBox1.Text == "Load the saved simulation")
+                        {
+                            FolderBrowserDialog fbd = new FolderBrowserDialog();
+                            fbd.SelectedPath = Statics.ProgramKey.OpenSubKey(Statics.ProgramsRegistryKeyName).GetValue(Statics.NameOfStringParameterInRegistryForFolderWithSaves).ToString() + @"\";
+                            if (fbd.ShowDialog() == DialogResult.OK)
+                            {
+                                if (File.Exists(fbd.SelectedPath + @"\" + "InfSprSim.cll"))
+                                {
+                                    Stream FileStream = File.OpenRead(fbd.SelectedPath + @"\" + "InfSprSim.cll");
+                                    BinaryFormatter deserializer = new BinaryFormatter();
+                                    districts = (List<Cell>)deserializer.Deserialize(FileStream);
+                                    FileStream.Close();
+                                }
+                                if (File.Exists(fbd.SelectedPath + @"\" + "InfSprSim.edg"))
+                                {
+                                    Stream FileStream = File.OpenRead(fbd.SelectedPath + @"\" + "InfSprSim.edg");
+                                    BinaryFormatter deserializer = new BinaryFormatter();
+                                    edgeBtwDistricts = (List<Edge>)deserializer.Deserialize(FileStream);
+                                    FileStream.Close();
+                                }
+                                if (File.Exists(fbd.SelectedPath + @"\" + "InfSprSim.vir"))
+                                {
+                                    Stream FileStream = File.OpenRead(fbd.SelectedPath + @"\" + "InfSprSim.vir");
+                                    BinaryFormatter deserializer = new BinaryFormatter();
+                                    virusInfection = (Virus)deserializer.Deserialize(FileStream);
+                                    FileStream.Close();
+                                }
+                                virus.Enabled = true;
+                                if (districts[0].IsInfected || districts[1].IsInfected || districts[2].IsInfected || districts[3].IsInfected || districts[4].IsInfected)
+                                {
+                                    button2.BackColor = Color.Red;
+                                    button2.Text = "Deactivate Virus";
+                                }
+                            }
+                        }
+                }
+                else
+                {
+                    virusInfection.IsActive = false;
+                }
             }
         }
 
