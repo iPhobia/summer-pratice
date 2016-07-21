@@ -409,18 +409,20 @@ namespace InfectionSpreadSimulator
 
         private void start_Click(object sender, EventArgs e)
         {
-            if (comboBox3.Text.Equals(""))
-                MessageBox.Show("At first you have to choose the district");
-            else
-            {
+            
                 if (virusInfection.IsActive == false)
                 {
                     int startRegion;
                     if (checkedListBox1.Text == "Choose the region to infect")
                     {
-                        startRegion = comboBox3.SelectedIndex;
-                        virusInfection.InfectRegion(districts[startRegion]);
-                        virusInfection.IsActive = true;
+                        if (comboBox3.Text.Equals(""))
+                            MessageBox.Show("At first you have to choose the district");
+                        else
+                        {
+                            startRegion = comboBox3.SelectedIndex;
+                            virusInfection.InfectRegion(districts[startRegion]);
+                            virusInfection.IsActive = true;
+                        }
                     }
                     else
                         if (checkedListBox1.Text == "Infect a randomly chosen region")
@@ -464,7 +466,6 @@ namespace InfectionSpreadSimulator
                                 }
                             }
                         }
-                }
                 else
                 {
                     virusInfection.IsActive = false;
