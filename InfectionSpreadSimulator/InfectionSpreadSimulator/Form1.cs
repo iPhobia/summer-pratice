@@ -484,23 +484,26 @@ namespace InfectionSpreadSimulator
                         numcheck++;
                         break;
                     }
-                        if(numcheck!=-1)
-                            MessageBox.Show("Only digits are allowed");
-                        else
-                    {
-                        if (comboBox1.Text.Equals("Kievskiy Primorskiy"))
-                            kievprim.InfectedChance = Convert.ToInt32(textBox11.Text);
-                        if (comboBox1.Text.Equals("Kievskiy Malinovskiy"))
-                            kievmalin.InfectedChance = Convert.ToInt32(textBox11.Text);
-                        if (comboBox1.Text.Equals("Malinovskiy Primorskiy"))
-                            malinprim.InfectedChance = Convert.ToInt32(textBox11.Text);
-                        if (comboBox1.Text.Equals("Malinovskiy Suvorovskiy"))
-                            malinsuvor.InfectedChance = Convert.ToInt32(textBox11.Text);
-                        if (comboBox1.Text.Equals("Suvorovskiy Primorskiy"))
-                            suvorprim.InfectedChance = Convert.ToInt32(textBox11.Text);
-                        if (comboBox1.Text.Equals("Suvorovskiy Poskot"))
-                            suvorposkot.InfectedChance = Convert.ToInt32(textBox11.Text);
-                    }
+                if (numcheck != -1)
+                {
+                    MessageBox.Show("Only digits are allowed");
+                    numcheck = -1;
+                }
+                else
+                {
+                    if (comboBox1.Text.Equals("Kievskiy Primorskiy"))
+                        kievprim.InfectedChance = Convert.ToInt32(textBox11.Text);
+                    if (comboBox1.Text.Equals("Kievskiy Malinovskiy"))
+                        kievmalin.InfectedChance = Convert.ToInt32(textBox11.Text);
+                    if (comboBox1.Text.Equals("Malinovskiy Primorskiy"))
+                        malinprim.InfectedChance = Convert.ToInt32(textBox11.Text);
+                    if (comboBox1.Text.Equals("Malinovskiy Suvorovskiy"))
+                        malinsuvor.InfectedChance = Convert.ToInt32(textBox11.Text);
+                    if (comboBox1.Text.Equals("Suvorovskiy Primorskiy"))
+                        suvorprim.InfectedChance = Convert.ToInt32(textBox11.Text);
+                    if (comboBox1.Text.Equals("Suvorovskiy Poskot"))
+                        suvorposkot.InfectedChance = Convert.ToInt32(textBox11.Text);
+                }
             }
         }
 
@@ -518,7 +521,10 @@ namespace InfectionSpreadSimulator
                     break;
                 }
             if (numcheck != -1)
+            {
                 MessageBox.Show("Only digits are allowed");
+                numcheck = -1;
+            }
             else
             {
                 if (comboBox2.Text.Equals("Kievskiy"))
@@ -548,13 +554,16 @@ namespace InfectionSpreadSimulator
                     break;
                 }
             if (numcheck != -1)
-                MessageBox.Show("Only digits are allowed");
-            else
-            if (comboBox2.Text.Equals("Kievskiy"))
             {
-                kiev.MaxHealth = Convert.ToInt32(textBox7.Text);
-                kiev.Health = kiev.MaxHealth;
+                MessageBox.Show("Only digits are allowed");
+                numcheck = -1;
             }
+            else
+                if (comboBox2.Text.Equals("Kievskiy"))
+                {
+                    kiev.MaxHealth = Convert.ToInt32(textBox7.Text);
+                    kiev.Health = kiev.MaxHealth;
+                }
             if (comboBox2.Text.Equals("Malinovskiy"))
             {
                 malin.MaxHealth = Convert.ToInt32(textBox7.Text);
