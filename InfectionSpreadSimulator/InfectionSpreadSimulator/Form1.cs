@@ -559,30 +559,32 @@ namespace InfectionSpreadSimulator
                 numcheck = -1;
             }
             else
+            {
                 if (comboBox2.Text.Equals("Kievskiy"))
                 {
                     kiev.MaxHealth = Convert.ToInt32(textBox7.Text);
                     kiev.Health = kiev.MaxHealth;
                 }
-            if (comboBox2.Text.Equals("Malinovskiy"))
-            {
-                malin.MaxHealth = Convert.ToInt32(textBox7.Text);
-                malin.Health = malin.MaxHealth;
-            }
-            if (comboBox2.Text.Equals("Primorskiy"))
-            {
-                prim.MaxHealth = Convert.ToInt32(textBox7.Text);
-                prim.Health = prim.MaxHealth;
-            }
-            if (comboBox2.Text.Equals("Suvorovskiy"))
-            {
-                suvor.MaxHealth = Convert.ToInt32(textBox7.Text);
-                suvor.Health = suvor.MaxHealth;
-            }
-            if (comboBox2.Text.Equals("Poselok Kotovskogo"))
-            {
-                paskot.MaxHealth = Convert.ToInt32(textBox7.Text);
-                paskot.Health = paskot.MaxHealth;
+                if (comboBox2.Text.Equals("Malinovskiy"))
+                {
+                    malin.MaxHealth = Convert.ToInt32(textBox7.Text);
+                    malin.Health = malin.MaxHealth;
+                }
+                if (comboBox2.Text.Equals("Primorskiy"))
+                {
+                    prim.MaxHealth = Convert.ToInt32(textBox7.Text);
+                    prim.Health = prim.MaxHealth;
+                }
+                if (comboBox2.Text.Equals("Suvorovskiy"))
+                {
+                    suvor.MaxHealth = Convert.ToInt32(textBox7.Text);
+                    suvor.Health = suvor.MaxHealth;
+                }
+                if (comboBox2.Text.Equals("Poselok Kotovskogo"))
+                {
+                    paskot.MaxHealth = Convert.ToInt32(textBox7.Text);
+                    paskot.Health = paskot.MaxHealth;
+                }
             }
         }
 
